@@ -1,0 +1,139 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+  /**
+   * Run initializations on sidebar load.
+   */
+  $(function() {
+    // Assign handler functions to sidebar elements here, if needed.
+    $('#sidebar-update-button').click(onUpdateClick);
+    $('#sidebar-write-button').click(onWriteClick);
+    $('#sidebar-convert-button').click(onConvertClick);
+    poll(300);
+    showStatus("Initialized");
+  });
+
+  /**
+   * Calls the server to retrieve information from the sheet.
+   * Gets the value in the active cell, which is then placed in the
+   * sidebar text field.
+   */
+  function onUpdateClick() {
+    showStatus("Update button clicked");
+    this.disabled = true;
+
+    // Send the value to the server and handle the response.
+    google.script.run
+        .withSuccessHandler(
+          function(msg, element) {
+            // Respond to success conditions here.
+            $('#sidebar-value').val(msg);
+            element.disabled = false;
+          })
+        .withFailureHandler(
+          function(msg, element) {
+            // Respond to failure conditions here.
+            showStatus(msg, 'error');
+            element.disabled = false;
+          })
+        .withUserObject(this)
+        .getDebugLog('#sidebar-value')
+        showStatus("Log updated")
+  }
+
+
+  /**
+   * Displays the given status message in the sidebar.
+   *
+   * @param {String} msg The status message to display.
+   * @param {String} classId The message type (class id) that the message
+   *   should be displayed as.
+   */
+  function showStatus(msg, classId) {
+    $('#sidebar-status').removeClass().html(msg);
+    if (classId) {
+      $('#sidebar-status').addClass(classId);
+    }
+  }
+  
+   function onWriteClick() {
+    showStatus("Write button clicked");
+
+    // Send the value to the server and handle the response.
+    google.script.run
+        .withSuccessHandler(
+          function(msg, element) {
+            // Respond to success conditions here.
+            showStatus('Cell set to reference value: ' + value);
+            element.disabled = false;
+          })
+        .withFailureHandler(
+          function(msg, element) {
+            // Respond to failure conditions here.
+            showStatus(msg, 'error');
+            element.disabled = false;
+          })
+        .withUserObject(this)
+        .setValue("")
+        showStatus("Data cleared");
+ 
+  }
+  
+function poll(interval) {
+    interval = interval || 3000;
+    setTimeout(function() {
+      google.script.run
+        .withSuccessHandler(showRecord)
+        .withFailureHandler(
+          function(msg, element) {
+            showStatus(msg, $('error'));
+            element.disabled = false;
+          })
+        .getDebugLog('#sidebar-value');
+    }, interval);
+  };
+  
+function showRecord() {
+    google.script.run
+        .withSuccessHandler(
+          function(msg, element) {
+            // Respond to success conditions here.
+            $('#sidebar-value').val(msg);
+            element.disabled = false;
+          })
+        .withFailureHandler(
+          function(msg, element) {
+            // Respond to failure conditions here.
+            showStatus(msg, 'error');
+            element.disabled = false;
+          })
+        .withUserObject(this)
+        .getDebugLog('#sidebar-value')
+        showStatus("Log updated")
+        //Setup the next poll
+        poll();
+}
+
+   function onConvertClick() {
+    showStatus("Convert button clicked");
+    var action = $('#sidebar-delimiter-select').val();
+    // Send the value to the server and handle the response.
+    google.script.run
+        .withSuccessHandler(
+          function(msg, element) {
+            // Respond to success conditions here.
+            showStatus('Cell set to reference value: ' + value);
+            element.disabled = false;
+          })
+        .withFailureHandler(
+          function(msg, element) {
+            // Respond to failure conditions here.
+            showStatus(msg, 'error');
+            element.disabled = false;
+          })
+        .withUserObject(this)
+        .convert(action)
+
+  }
+</script>
+
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+    <?!= HtmlService.createHtmlOutputFromFile('SidebarJavaScript').getContent(); ?>
+    <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+    <?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+  </head>
+
+  <body>
+  
+    <!-- Create a button to close the side bar -->
+    <div class="block">
+      <button style="float:right" onclick="google.script.host.close()">Close</button>
+    </div>
+  
+    <!-- Create a button to update the side bar -->
+    <div class="block">
+      <button id="sidebar-update-button" style="float:left">Update</button>
+    </div>
+    
+    <!-- Add separator line -->
+    <br>
+    <br>
+    <hr class="solid">
+    
+    <div>
+      <p>This allows you to convert current sheet to CSV file.</p>
+      <div class="block" id="sidebar-elements">
+        <label for="sidebar-delimiter-select">
+          Select the delimiter:
+        </label>
+        <select class="width-100" id="sidebar-delimiter-select">
+          <option value="comma">Comma delimited data</option>
+          <option value="tab">Tab delimited data</option>
+          <option value="semicolon">Semicolon delimited data</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <!-- Create a button to convert to CVS -->
+    <div class="block">
+      <button style="float:right" id="sidebar-convert-button" style="float:left">Convert to CSV</button>
+    </div>
+    
+    <!-- Add statusbar at bottom on the sidebar -->
+    <div class="sidebar bottom">
+       <label for="sidebar-value">Debug log:</label>
+       <textarea id="sidebar-value" name="sidebar-value" rows="5" cols="38" value="1"></textarea>
+       <!-- Create a button to clear the log -->
+       <div class="block">
+          <button style="float:right" id="sidebar-write-button" style="float:left">Clear</button>
+       </div>
+       <span class="status-bar" id="sidebar-status"></span>
+    </div>
+    
+  </body>
+</html>
